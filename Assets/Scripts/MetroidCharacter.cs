@@ -91,7 +91,7 @@ public class MetroidCharacter : MonoBehaviour
 
     
     [Header("Jumping")]
-    [SerializeField] private float _jumpSpeed = 6;
+    [SerializeField] private float _jumpFore = 6;
     [SerializeField] private float _wallJumpSpeed = 5;
     [SerializeField] private float _coyoteTimeThresh = 0.1f;
     private bool _shortJump = false;
@@ -103,17 +103,17 @@ public class MetroidCharacter : MonoBehaviour
     private void Jump() {
         // When Jump is pressed
         if  (Input.GetAxisRaw("Jump") == 1 && isGrounded()) {
-            GetComponent<Rigidbody2D>().AddForce(new Vector2(0.0f, 4.0f), ForceMode2D.Impulse);
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(0.0f, _jumpFore), ForceMode2D.Impulse);
         } 
-        // else {
-        //     if (!isGrounded() && !_shortJump && velocity.y > 0) {
-        //         _shortJump = true;
-        //     }
-        // }
+        else {
+            if (!isGrounded() && !_shortJump && velocity.y > 0) {
+                _shortJump = true;
+            }
+        }
 
-        // if (!isGrounded()) {
-        //     if (_verticalSpeed > 0) _verticalSpeed = 0;
-        // }
+        if (lineCollidesWithWorld(getDetectionVector(Direction.Up))) {
+            if (_verticalSpeed > 0) _verticalSpeed = 0;
+        }
 
     }
 
@@ -140,9 +140,7 @@ public class MetroidCharacter : MonoBehaviour
         Vector3 endPoint = pos + move;
 
         var collides = Physics2D.OverlapBox(endPoint, _bounds.size, 0, _groundLayer);
-        Debug.Log(collides);
         if (!collides) {
-            Debug.Log("No collision");
             transform.position += move;
             return;
         }
