@@ -16,6 +16,7 @@ public class Movement : MonoBehaviour
     public float detectionOffset = 0.5f;
     public float fallModifier = 2.5f;
     public float gravity = 5;
+    public float groundedMargin = 0.1f;
     public float maxFallSpeed = -10;
     public float lowJumpModifier = 2f;
 
@@ -34,6 +35,12 @@ public class Movement : MonoBehaviour
     // Coyote
     private float lastGrounded;
     public float coyoteTime;
+    private bool hasCoyoted = false;
+
+    // Jump margin
+    // private bool queuedJump = false;
+    // private bool canQueueJump = false;
+    // public float queableJumpMargin = 3f;
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +55,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
         Walk();
+        // jumpQueable();
         Jump();
         Gravity();
         Attack();
@@ -137,24 +145,38 @@ public class Movement : MonoBehaviour
 
     private bool canCoyoteJump()
     {
-        return (Time.time - lastGrounded) < coyoteTime;
+        return (Time.time - lastGrounded) < coyoteTime && !hasCoyoted;
     }
 
     private void Jump()
     {
         if (Input.GetButtonDown("Jump"))
         {
-            if (grounded() || canCoyoteJump())
+            if (grounded())
             {
+                Debug.Log("Regular Jump");
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
                 return;
             }
-            else
+            else if (canCoyoteJump())
             {
-                if (onWall())
-                {
-                    WallJump();
-                }
+                Debug.Log("Coyote Jump");
+                body.AddForce(jumpForce, ForceMode2D.Impulse);
+                hasCoyoted = true;
+                return;
+            }
+
+            // if (canQueueJump)
+            // {
+            //     Debug.Log("Jump queued");
+            //     queuedJump = true;
+            //     return;
+            // }
+
+            if (onWall())
+            {
+                WallJump();
+                return;
             }
         }
     }
@@ -186,6 +208,13 @@ public class Movement : MonoBehaviour
             if (vy < 0)
                 body.velocity = new Vector2(vx, 0);
             canWallJump = true;
+            hasCoyoted = false;
+            // if (queuedJump)
+            // {
+            //     Debug.Log("Jump from queue");
+            //     body.AddForce(jumpForce, ForceMode2D.Impulse);
+            //     queuedJump = false;
+            // }
         }
         else
         {
@@ -341,9 +370,22 @@ public class Movement : MonoBehaviour
     private bool grounded()
     {
         Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffset;
-        Vector2 size = new Vector2(GetComponent<SpriteRenderer>().bounds.size.x / 1.2f, 0.1f);
+        Vector2 size = new Vector2(
+            GetComponent<SpriteRenderer>().bounds.size.x / 1.2f,
+            groundedMargin
+        );
         return Physics2D.OverlapBox(pos, size, 0, groundLayer);
     }
+
+    // private void jumpQueable()
+    // {
+    //     Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffset;
+    //     Vector2 size = new Vector2(
+    //         GetComponent<SpriteRenderer>().bounds.size.x / 1.2f,
+    //         queableJumpMargin
+    //     );
+    //     canQueueJump = Physics2D.OverlapBox(pos, size, 0, groundLayer);
+    // }
 
     private bool lineCollidesWithWorld(Vector2 vect)
     {
@@ -376,13 +418,24 @@ public class Movement : MonoBehaviour
             return;
 
         Gizmos.color = Color.blue;
-        Vector3 pos = transform.position + Vector3.left * detectionOffset;
+        // Vector3 pos = transform.position + Vector3.left * detectionOffset;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.left * detectionOffset);
         Gizmos.DrawLine(transform.position, transform.position + Vector3.right * detectionOffset);
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * detectionOffset);
-        pos = (Vector2)transform.position + Vector2.down * detectionOffset;
-        Vector2 size = new Vector2(GetComponent<SpriteRenderer>().bounds.size.x / 1.2f, 0.1f);
+
+        // Grounded
+
+        Vector3 pos = (Vector2)transform.position + Vector2.down * detectionOffset;
+        Vector2 size = new Vector2(
+            GetComponent<SpriteRenderer>().bounds.size.x / 1.2f,
+            groundedMargin
+        );
         Gizmos.DrawWireCube(pos, size);
+
+        // Gizmos.color = Color.green;
+        // pos = (Vector2)transform.position + Vector2.down * detectionOffset;
+        // size = new Vector2(GetComponent<SpriteRenderer>().bounds.size.x / 1.2f, queableJumpMargin);
+        // Gizmos.DrawWireCube(pos, size);
 
         Gizmos.color = Color.red;
         for (int i = 0; i < positions.Count; i++)
