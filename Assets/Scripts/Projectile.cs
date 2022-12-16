@@ -6,6 +6,7 @@ public class Projectile : MonoBehaviour
 {
     public float range;
     public float damage;
+    public float knockback;
     public float detectionOffset = 0.5f;
     public float gravity = 5;
     public float groundedMargin = 0.1f;
@@ -41,14 +42,15 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private bool grounded()
+    private bool Hit()
     {
-        Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffset;
+        Vector2 pos = (Vector2)transform.position;
         Vector2 size = new Vector2(
-            GetComponent<SpriteRenderer>().bounds.size.x / 1.2f,
-            groundedMargin
+            GetComponent<SpriteRenderer>().bounds.size.x * 1.1f,
+            GetComponent<SpriteRenderer>().bounds.size.y * 1.1f
         );
-        return Physics2D.OverlapBox(pos, size, 0, groundLayer);
+        return Physics2D.OverlapBox(pos, size, 0, groundLayer)
+            || Physics2D.OverlapBox(pos, size, 0, enemyLayer);
     }
 
     public void addForce(Vector2 vel)
@@ -63,7 +65,7 @@ public class Projectile : MonoBehaviour
 
     private void Explode()
     {
-        if (grounded())
+        if (Hit())
         {
             Vector2 pos = (Vector2)transform.position;
             Collider2D[] hits = Physics2D.OverlapCircleAll(pos, range, enemyLayer);
@@ -72,11 +74,19 @@ public class Projectile : MonoBehaviour
             {
                 enemyCollider.TryGetComponent<BasicEnemy>(out enemy);
                 enemy.takeDamage(damage);
+                Vector2 direction = (Vector2)enemy.transform.position - (Vector2)transform.position;
+                enemy.push(knockback * direction);
                 //TODO: Add damage falloff
             }
             Debug.Log("Exploded");
             Destroy(gameObject);
         }
         return;
+    }
+
+    public void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, range);
     }
 }

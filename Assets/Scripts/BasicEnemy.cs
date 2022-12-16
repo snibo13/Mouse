@@ -12,11 +12,13 @@ public class BasicEnemy : MonoBehaviour
     private int face;
     private LayerMask playerLayer;
     private bool attacking = false;
+    public Rigidbody2D body;
 
     // Start is called before the first frame update
     void Start()
     {
         playerLayer = 1 << LayerMask.NameToLayer("Player");
+        body = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -63,6 +65,11 @@ public class BasicEnemy : MonoBehaviour
         if (hp <= 0)
             die();
         Debug.Log(hp);
+    }
+
+    public void push(Vector2 knockback)
+    {
+        body.AddForce(knockback, ForceMode2D.Impulse);
     }
 
     IEnumerator DelayReAttack()
