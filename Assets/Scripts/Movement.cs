@@ -42,6 +42,8 @@ public class Movement : MonoBehaviour
     // private bool canQueueJump = false;
     // public float queableJumpMargin = 3f;
 
+    public GameObject projectilePrefab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -250,11 +252,13 @@ public class Movement : MonoBehaviour
     public float attackThreeRange = 2;
     private bool attacking = false;
 
+    public float spawnOffset = 0.7f;
+
     private void Attack()
     {
         if (Input.GetButtonDown("Action1"))
         {
-            attackAction(1);
+            rangedAttack();
         }
         else if (Input.GetButtonDown("Action2"))
         {
@@ -264,6 +268,18 @@ public class Movement : MonoBehaviour
         {
             attackAction(3);
         }
+    }
+
+    private void rangedAttack()
+    {
+        Vector2 spawnPoint = (Vector2)transform.position + Vector2.right * face * spawnOffset;
+        GameObject newProjectile = (GameObject)Instantiate(
+            projectilePrefab,
+            spawnPoint,
+            transform.rotation
+        );
+        Projectile projectile = newProjectile.GetComponent<Projectile>();
+        projectile.addForce(Vector2.right * face * projectile.speed);
     }
 
     private void attackAction(int attack)

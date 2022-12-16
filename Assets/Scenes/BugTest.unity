@@ -243,8 +243,8 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_GravityScale: 0.8
+  m_Material: {fileID: 6200000, guid: f3790677db1c10f4b9f6287512679ad6, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -266,10 +266,10 @@ MonoBehaviour:
   detectionRange: 17.89
   escapeRange: 31.62
   grounded: 0
-  forceDistance: 0.7
+  forceDistance: 0.85
   forceConstant: 1.5
-  maxForce: 2
-  targetMultiplier: 1.25
+  maxForce: 5
+  targetMultiplier: 2
 --- !u!114 &223939676
 MonoBehaviour:
   m_ObjectHideFlags: 0
