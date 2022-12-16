@@ -163,6 +163,8 @@ MonoBehaviour:
   grounded: 0
   forceDistance: 2
   forceConstant: 0.1
+  maxForce: 0
+  targetMultiplier: 0
 --- !u!114 &314343996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,7 +349,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 392849614}
   m_LocalRotation: {x: -5.089668e-16, y: -0.12218325, z: -6.2656655e-17, w: 0.9925076}
-  m_LocalPosition: {x: -0.5134871, y: 1.5900003, z: -8.4461355}
+  m_LocalPosition: {x: -0.24049203, y: 1.5900003, z: -8.377887}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -433,7 +435,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -5.089668e-16, y: -0.12218325, z: -6.2656655e-17, w: 0.9925076}
-  m_LocalPosition: {x: -0.5134871, y: 1.5900003, z: -8.4461355}
+  m_LocalPosition: {x: -0.24049203, y: 1.5900003, z: -8.377887}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -520,6 +522,7 @@ MonoBehaviour:
   maxFallSpeed: -16
   lowJumpModifier: 1
   coyoteTime: 0
+  projectilePrefab: {fileID: 8174598197979160844, guid: da5e5932719baa04ba3c1a5cd064eed1, type: 3}
   hp: 100
   attackOneDamage: 10
   attackTwoDamage: 10
@@ -527,6 +530,7 @@ MonoBehaviour:
   attackOneRange: 1
   attackTwoRange: 5
   attackThreeRange: 2
+  spawnOffset: 0.7
 --- !u!212 &600126796
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -680,6 +684,8 @@ MonoBehaviour:
   grounded: 1
   forceDistance: 2
   forceConstant: -2
+  maxForce: 0
+  targetMultiplier: 0
 --- !u!114 &778527037
 MonoBehaviour:
   m_ObjectHideFlags: 0

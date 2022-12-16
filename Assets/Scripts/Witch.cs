@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public class Witch : MonoBehaviour
 {
     public float maxSpeed = 10;
     public Vector2 jumpForce = new Vector2(0, 10);
@@ -41,8 +41,6 @@ public class Movement : MonoBehaviour
     // private bool queuedJump = false;
     // private bool canQueueJump = false;
     // public float queableJumpMargin = 3f;
-
-    public GameObject projectilePrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -252,13 +250,11 @@ public class Movement : MonoBehaviour
     public float attackThreeRange = 2;
     private bool attacking = false;
 
-    public float spawnOffset = 0.7f;
-
     private void Attack()
     {
         if (Input.GetButtonDown("Action1"))
         {
-            rangedAttack();
+            attackAction(1);
         }
         else if (Input.GetButtonDown("Action2"))
         {
@@ -268,18 +264,6 @@ public class Movement : MonoBehaviour
         {
             attackAction(3);
         }
-    }
-
-    private void rangedAttack()
-    {
-        Vector2 spawnPoint = (Vector2)transform.position + Vector2.right * face * spawnOffset;
-        GameObject newProjectile = (GameObject)Instantiate(
-            projectilePrefab,
-            spawnPoint,
-            transform.rotation
-        );
-        Projectile projectile = newProjectile.GetComponent<Projectile>();
-        projectile.addForce(Vector2.right * face * projectile.speed);
     }
 
     private void attackAction(int attack)
@@ -325,6 +309,20 @@ public class Movement : MonoBehaviour
         float range = Vector2.SqrMagnitude(attackVector);
         return Physics2D.OverlapCircleAll(pos, range, enemyLayer);
         // return Physics2D.Linecast(transform.position, attackVector, enemyLayer);
+    }
+
+    private RaycastHit2D hitScan(float range)
+    {
+        // Positive direction is to the right
+        Vector2 attackVector = Vector2.right * face;
+        return Physics2D.Linecast(transform.position, attackVector, enemyLayer);
+    }
+
+    private void rangedAttack(float range)
+    {
+        RaycastHit2D attackHit = hitScan(range);
+        
+
     }
 
     IEnumerator DelayReAttack()
