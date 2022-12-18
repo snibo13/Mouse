@@ -13,7 +13,8 @@ public class Movement : MonoBehaviour
     public float deaccel = 50;
 
     public float aerialDeaccel = 10.0f;
-    public float detectionOffset = 0.5f;
+    public float detectionOffsetY = 0.5f;
+    public float detectionOffsetX = 0.3f;
     public float fallModifier = 2.5f;
     public float gravity = 5;
     public float groundedMargin = 0.1f;
@@ -44,6 +45,9 @@ public class Movement : MonoBehaviour
 
     public GameObject projectilePrefab;
 
+    private Animator Ub;
+    private SpriteRenderer sprite;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -51,6 +55,8 @@ public class Movement : MonoBehaviour
         groundLayer = 1 << LayerMask.NameToLayer("Ground");
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         positions = new List<Vector3>();
+        Ub = GetComponent<Animator>();
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -66,14 +72,32 @@ public class Movement : MonoBehaviour
         // positions.Add(transform.position);
     }
 
+
     private void Walk()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         if (horizontal < 0)
+        {
             face = -1;
-        else if (horizontal > 0)
-            face = 1;
+            if (!Ub.GetBool("Moving")) {
+                Ub.SetBool("Moving", true);
+                
+            }
 
+
+        }
+            
+        else if (horizontal > 0) {
+            face = 1;
+            if (!Ub.GetBool("Moving"))
+            {
+                Ub.SetBool("Moving", true);
+                // sprite.flipX = face;
+            }
+                
+        }
+        else
+            Ub.SetBool("Moving", false);
         if (grounded())
         {
             GroundMovement(horizontal);
@@ -82,6 +106,8 @@ public class Movement : MonoBehaviour
         {
             AerialMovement(horizontal);
         }
+        sprite.flipX = (face == -1);
+        
     }
 
     private void Groundtime()
@@ -380,12 +406,12 @@ public class Movement : MonoBehaviour
                 break;
         }
         Vector2 pos = transform.position;
-        return pos + new Vector2(h * detectionOffset, v * detectionOffset);
+        return pos + new Vector2(h * detectionOffsetX, v * detectionOffsetY);
     }
 
     private bool grounded()
     {
-        Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffset;
+        Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffsetY;
         Vector2 size = new Vector2(
             GetComponent<SpriteRenderer>().bounds.size.x / 1.2f,
             groundedMargin
@@ -410,8 +436,8 @@ public class Movement : MonoBehaviour
 
     private bool circleCollidesWithWorld(Vector2 dir)
     {
-        Vector2 pos = (Vector2)transform.position + dir * detectionOffset;
-        return Physics2D.OverlapCircle(pos, detectionOffset, groundLayer);
+        Vector2 pos = (Vector2)transform.position + dir * detectionOffsetX;
+        return Physics2D.OverlapCircle(pos, detectionOffsetX, groundLayer);
     }
 
     private int wallTouch()
@@ -435,13 +461,13 @@ public class Movement : MonoBehaviour
 
         Gizmos.color = Color.blue;
         // Vector3 pos = transform.position + Vector3.left * detectionOffset;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.left * detectionOffset);
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.right * detectionOffset);
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * detectionOffset);
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.left * detectionOffsetX);
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.right * detectionOffsetX);
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * detectionOffsetY);
 
         // Grounded
 
-        Vector3 pos = (Vector2)transform.position + Vector2.down * detectionOffset;
+        Vector3 pos = (Vector2)transform.position + Vector2.down * detectionOffsetY;
         Vector2 size = new Vector2(
             GetComponent<SpriteRenderer>().bounds.size.x / 1.2f,
             groundedMargin

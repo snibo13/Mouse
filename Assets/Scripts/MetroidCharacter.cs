@@ -16,6 +16,12 @@ public class MetroidCharacter : MonoBehaviour
     private enum Direction {Left, Right, Up, Down};
     [SerializeField] private Bounds _bounds;
     [SerializeField] private LayerMask _groundLayer;
+    Animator Ub;
+
+    void Start()
+    {
+        Ub = GetComponent<Animator>();
+    }
 
 
     // Update is called once per frame
@@ -31,8 +37,22 @@ public class MetroidCharacter : MonoBehaviour
         Jump();
         // FastFall();
         Move();
+        // Animation();
     }
 
+
+    private void Animation()
+    {
+        Debug.Log(_horizontalSpeed);
+        if (Mathf.Abs(_horizontalSpeed) > 0) {
+            Ub.SetBool("Moving",true);
+            Debug.Log("Moving");
+        }
+        else {
+            Ub.SetBool("Moving",false);
+            Debug.Log("Idle");
+        }
+    }
 
     // Movement parameters
     [Header("Movement")]
@@ -44,6 +64,7 @@ public class MetroidCharacter : MonoBehaviour
 
     private void Walk() {
         float horizontal = Input.GetAxisRaw("Horizontal");
+        Debug.Log(horizontal);
         if (horizontal != 0) {
             _horizontalSpeed += horizontal * _accel * Time.deltaTime;
             // Limit speed to max value
@@ -51,8 +72,15 @@ public class MetroidCharacter : MonoBehaviour
 
             //Speed boost at jump apex
             _horizontalSpeed += _apexBoost * Mathf.Sign(horizontal) * getJumpPosition();
+            Debug.Log("Test A");
+            Ub.SetBool("Moving",true);
+            Debug.Log("Test B");
+            Debug.Log(Ub.GetBool("Moving"));
         } else {
             _horizontalSpeed = Mathf.MoveTowards(_horizontalSpeed, 0, _deaccel * Time.deltaTime);
+            
+            Ub.SetBool("Moving",false);
+            Debug.Log(Ub.GetBool("Moving"));
         }
 
 
@@ -66,8 +94,8 @@ public class MetroidCharacter : MonoBehaviour
     }
 
 
-        [Header("Gravity")]
-            [SerializeField] private float _shortJumpGravity = 1f;
+    [Header("Gravity")]
+    [SerializeField] private float _shortJumpGravity = 1f;
     [SerializeField] private float _maxFallSpeed = 120f;
     [SerializeField] private float _minFallSpeed = 80f;
     [SerializeField] private float _fallClamp = -40f;
@@ -177,7 +205,7 @@ public class MetroidCharacter : MonoBehaviour
         Gizmos.DrawLine(pos, new Vector3(1 * detectionOffset, 0,0) + pos);
         Gizmos.DrawLine(pos, new Vector3(0, -1 * detectionOffset, 0) + pos);
         Gizmos.DrawLine(pos, new Vector3(0, 1 * detectionOffset, 0) + pos);
-
+        Gizmos.color = Color.cyan;
         Gizmos.DrawCube(pos + _bounds.center, _bounds.size);
     }
 
