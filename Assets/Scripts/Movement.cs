@@ -37,11 +37,11 @@ public class Movement : MonoBehaviour
     private float lastGrounded;
     public float coyoteTime;
     private bool hasCoyoted = false;
-
     // Jump margin
-    // private bool queuedJump = false;
-    // private bool canQueueJump = false;
-    // public float queableJumpMargin = 3f;
+    private bool queuedJump = false;
+    private bool canQueueJump = false;
+    public float queueOffset = 1.5f;
+    public float queableJumpMargin = 1.5f;
 
     public GameObject projectilePrefab;
 
@@ -63,7 +63,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
         Walk();
-        // jumpQueable();
+        jumpQueable();
         Jump();
         Gravity();
         Attack();
@@ -194,12 +194,12 @@ public class Movement : MonoBehaviour
                 return;
             }
 
-            // if (canQueueJump)
-            // {
-            //     Debug.Log("Jump queued");
-            //     queuedJump = true;
-            //     return;
-            // }
+            if (canQueueJump)
+            {
+                Debug.Log("Jump queued");
+                queuedJump = true;
+                return;
+            }
 
             if (onWall())
             {
@@ -237,12 +237,13 @@ public class Movement : MonoBehaviour
                 body.velocity = new Vector2(vx, 0);
             canWallJump = true;
             hasCoyoted = false;
-            // if (queuedJump)
-            // {
-            //     Debug.Log("Jump from queue");
-            //     body.AddForce(jumpForce, ForceMode2D.Impulse);
-            //     queuedJump = false;
-            // }
+            if (queuedJump)
+            {
+                Debug.Log("Jump from queue");
+                body.AddForce(jumpForce, ForceMode2D.Impulse);
+                queuedJump = false;
+                return;
+            }
         }
         else
         {
@@ -413,21 +414,21 @@ public class Movement : MonoBehaviour
     {
         Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffsetY;
         Vector2 size = new Vector2(
-            GetComponent<SpriteRenderer>().bounds.size.x / 1.2f,
+            GetComponent<SpriteRenderer>().bounds.size.x / 2f,
             groundedMargin
         );
         return Physics2D.OverlapBox(pos, size, 0, groundLayer);
     }
 
-    // private void jumpQueable()
-    // {
-    //     Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffset;
-    //     Vector2 size = new Vector2(
-    //         GetComponent<SpriteRenderer>().bounds.size.x / 1.2f,
-    //         queableJumpMargin
-    //     );
-    //     canQueueJump = Physics2D.OverlapBox(pos, size, 0, groundLayer);
-    // }
+    private void jumpQueable()
+    {
+        Vector2 pos = (Vector2)transform.position + Vector2.down * queueOffset; 
+        Vector2 size = new Vector2(
+            GetComponent<SpriteRenderer>().bounds.size.x / 2f,
+            groundedMargin
+        );
+        canQueueJump = Physics2D.OverlapBox(pos, size, 0, groundLayer);
+    }
 
     private bool lineCollidesWithWorld(Vector2 vect)
     {
@@ -469,12 +470,20 @@ public class Movement : MonoBehaviour
 
         Vector3 pos = (Vector2)transform.position + Vector2.down * detectionOffsetY;
         Vector2 size = new Vector2(
-            GetComponent<SpriteRenderer>().bounds.size.x / 1.2f,
+            GetComponent<SpriteRenderer>().bounds.size.x / 2f,
             groundedMargin
         );
         Gizmos.DrawWireCube(pos, size);
 
-        // Gizmos.color = Color.green;
+
+
+        Gizmos.color = Color.green;
+        size = new Vector2(
+            GetComponent<SpriteRenderer>().bounds.size.x / 2f,
+            queableJumpMargin
+        );
+        pos = (Vector2)transform.position + Vector2.down * queueOffset;
+        Gizmos.DrawWireCube(pos, size);
         // pos = (Vector2)transform.position + Vector2.down * detectionOffset;
         // size = new Vector2(GetComponent<SpriteRenderer>().bounds.size.x / 1.2f, queableJumpMargin);
         // Gizmos.DrawWireCube(pos, size);

@@ -526,6 +526,8 @@ MonoBehaviour:
   maxFallSpeed: -16
   lowJumpModifier: 1
   coyoteTime: 0
+  queueOffset: 1.5
+  queableJumpMargin: 2
   projectilePrefab: {fileID: 8174598197979160844, guid: da5e5932719baa04ba3c1a5cd064eed1, type: 3}
   hp: 100
   attackOneDamage: 10
