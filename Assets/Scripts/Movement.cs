@@ -47,6 +47,8 @@ public class Movement : MonoBehaviour
     public float dashTime = 0.5f;
 
     public GameObject projectilePrefab;
+    public GameObject doubleJumpPrefab;
+    private GameObject platform;
 
     private Animator Ub;
     private SpriteRenderer sprite;
@@ -78,6 +80,8 @@ public class Movement : MonoBehaviour
         Groundtime();
         // For debugging jump
         // positions.Add(transform.position);
+        Ub.SetBool("Grounded", grounded());
+        Ub.SetFloat("Vy", body.velocity.y);
     }
 
 
@@ -217,6 +221,12 @@ public class Movement : MonoBehaviour
                 Debug.Log("Double Jump");
                 canDoubleJump = false;
                 body.AddForce(jumpForce / 1.5f, ForceMode2D.Impulse);
+                Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffsetY;
+                platform = (GameObject)Instantiate(
+                    doubleJumpPrefab,
+                    pos,
+                    transform.rotation
+                );
                 return;
             }
         }

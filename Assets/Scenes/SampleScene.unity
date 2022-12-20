@@ -366,6 +366,7 @@ MonoBehaviour:
   queableJumpMargin: 2
   dashTime: 0.3
   projectilePrefab: {fileID: 8174598197979160844, guid: 77e2b2ccfb0f0104098d383d850febea, type: 3}
+  doubleJumpPrefab: {fileID: 7653089790830657011, guid: acdfe55db7fefbd43895f3c7ccd777f8, type: 3}
   dashForce: {x: 20, y: 0}
   hp: 100
   attackOneDamage: 10
