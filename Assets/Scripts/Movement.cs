@@ -43,6 +43,8 @@ public class Movement : MonoBehaviour
     public float queueOffset = 1.5f;
     public float queableJumpMargin = 1.5f;
 
+    private bool canDoubleJump;
+
     public GameObject projectilePrefab;
 
     private Animator Ub;
@@ -63,6 +65,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
         Walk();
+        Dash();
         jumpQueable();
         Jump();
         Gravity();
@@ -194,19 +197,54 @@ public class Movement : MonoBehaviour
                 return;
             }
 
-            if (canQueueJump)
+            else if (canQueueJump)
             {
                 Debug.Log("Jump queued");
                 queuedJump = true;
                 return;
             }
 
-            if (onWall())
+            else if (onWall())
             {
                 WallJump();
                 return;
             }
+
+            else if (canDoubleJump) {
+                Debug.Log("Double Jump");
+                canDoubleJump = false;
+                body.AddForce(jumpForce / 1.5f, ForceMode2D.Impulse);
+                return;
+            }
         }
+    }
+
+    private bool canDash = true;
+    private bool dashing = false;
+    public Vector2 dashForce;
+
+    private void Dash()
+    {
+        if (Input.GetButtonDown("Dash") && canDash) {
+                Debug.Log("Dash on Cooldown");
+                Vector2 dashVelocity = body.velocity;
+                dashVelocity.x = dashForce.x;
+                body.velocity = dashVelocity;
+                canDash = false;
+                dashing = true;
+                StartCoroutine("DashCooldown");
+        }
+        
+        
+    }
+
+    IEnumerator DashCooldown()
+    {
+        // Debug.Log("Reset");
+        // attacking = false;
+        yield return new WaitForSeconds(1.3f);
+        Debug.Log("Dash Available");
+        canDash = true;
     }
 
     private void WallJump()
@@ -236,6 +274,7 @@ public class Movement : MonoBehaviour
             if (vy < 0)
                 body.velocity = new Vector2(vx, 0);
             canWallJump = true;
+            canDoubleJump = true;
             hasCoyoted = false;
             if (queuedJump)
             {
@@ -279,6 +318,10 @@ public class Movement : MonoBehaviour
     public float attackThreeRange = 2;
     private bool attacking = false;
 
+    public float bpRange = 3f;
+    public float bpDamage = 1f;
+    public float bpKnockback = 30f;
+
     public float spawnOffset = 0.7f;
 
     private void Attack()
@@ -293,7 +336,7 @@ public class Movement : MonoBehaviour
         }
         else if (Input.GetButtonDown("Action3"))
         {
-            attackAction(3);
+            blackPanther();
         }
     }
 
@@ -307,6 +350,25 @@ public class Movement : MonoBehaviour
         );
         Projectile projectile = newProjectile.GetComponent<Projectile>();
         projectile.addForce(Vector2.right * face * projectile.speed);
+    }
+
+    private void blackPanther()
+    {
+        Vector2 pos = (Vector2)transform.position;
+        Collider2D[] hits = Physics2D.OverlapCircleAll(pos, bpRange, enemyLayer);
+        BasicEnemy enemy;
+        Debug.Log(hits.Length);
+        foreach (Collider2D enemyCollider in hits)
+        {
+            enemyCollider.TryGetComponent<BasicEnemy>(out enemy);
+            enemy.takeDamage(bpDamage);
+            Debug.Log("Damaged");
+            Vector2 direction = (Vector2)enemy.transform.position - (Vector2)transform.position;
+            Debug.Log("Push Movement");
+            enemy.push(bpKnockback * direction.normalized);
+            //TODO: Add damage falloff
+        }
+        Debug.Log("Black Panther");
     }
 
     private void attackAction(int attack)
@@ -414,7 +476,7 @@ public class Movement : MonoBehaviour
     {
         Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffsetY;
         Vector2 size = new Vector2(
-            GetComponent<SpriteRenderer>().bounds.size.x / 2f,
+            GetComponent<SpriteRenderer>().bounds.size.x / 8f,
             groundedMargin
         );
         return Physics2D.OverlapBox(pos, size, 0, groundLayer);
@@ -424,7 +486,7 @@ public class Movement : MonoBehaviour
     {
         Vector2 pos = (Vector2)transform.position + Vector2.down * queueOffset; 
         Vector2 size = new Vector2(
-            GetComponent<SpriteRenderer>().bounds.size.x / 2f,
+            GetComponent<SpriteRenderer>().bounds.size.x / 8f,
             groundedMargin
         );
         canQueueJump = Physics2D.OverlapBox(pos, size, 0, groundLayer);
@@ -470,7 +532,7 @@ public class Movement : MonoBehaviour
 
         Vector3 pos = (Vector2)transform.position + Vector2.down * detectionOffsetY;
         Vector2 size = new Vector2(
-            GetComponent<SpriteRenderer>().bounds.size.x / 2f,
+            GetComponent<SpriteRenderer>().bounds.size.x / 8f,
             groundedMargin
         );
         Gizmos.DrawWireCube(pos, size);
@@ -479,7 +541,7 @@ public class Movement : MonoBehaviour
 
         Gizmos.color = Color.green;
         size = new Vector2(
-            GetComponent<SpriteRenderer>().bounds.size.x / 2f,
+            GetComponent<SpriteRenderer>().bounds.size.x / 8f,
             queableJumpMargin
         );
         pos = (Vector2)transform.position + Vector2.down * queueOffset;
@@ -500,5 +562,6 @@ public class Movement : MonoBehaviour
         float range = Vector2.SqrMagnitude(attackVector);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(pos, range);
+        Gizmos.DrawWireSphere(transform.position, bpRange);
     }
 }

@@ -12,7 +12,7 @@ public class BasicEnemy : MonoBehaviour
     private int face;
     private LayerMask playerLayer;
     private bool attacking = false;
-    public Rigidbody2D body;
+    private Rigidbody2D body;
 
     // Start is called before the first frame update
     void Start()
@@ -69,7 +69,12 @@ public class BasicEnemy : MonoBehaviour
 
     public void push(Vector2 knockback)
     {
+        Debug.Log("Pushed");
+        body.velocity = new Vector2(0,0);
+        Debug.Log(body.velocity);
         body.AddForce(knockback, ForceMode2D.Impulse);
+        // Debug.Log("Stunned");
+        // yield return new WaitForSeconds(0.2f);
     }
 
     IEnumerator DelayReAttack()

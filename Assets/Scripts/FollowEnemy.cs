@@ -57,7 +57,6 @@ public class FollowEnemy : MonoBehaviour
                 body.AddForce(wallForce, ForceMode2D.Force);
 
                 body.velocity = Vector2.ClampMagnitude(body.velocity, speed);
-                Debug.Log(Vector2.SqrMagnitude(body.velocity));
             }
         }
     }
@@ -182,19 +181,19 @@ public class FollowEnemy : MonoBehaviour
 
     public void OnDrawGizmos()
     {
-        // Gizmos.DrawWireSphere(transform.position, detectionRange);
-        // Gizmos.DrawWireSphere(transform.position, escapeRange);
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.left * forceDistance);
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.right * forceDistance);
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.up * forceDistance);
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * forceDistance);
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
+        Gizmos.DrawWireSphere(transform.position, escapeRange);
+        // Gizmos.color = Color.green;
+        // Gizmos.DrawLine(transform.position, transform.position + Vector3.left * forceDistance);
+        // Gizmos.DrawLine(transform.position, transform.position + Vector3.right * forceDistance);
+        // Gizmos.DrawLine(transform.position, transform.position + Vector3.up * forceDistance);
+        // Gizmos.DrawLine(transform.position, transform.position + Vector3.down * forceDistance);
 
-        Gizmos.color = Color.red;
-        // Gizmos.DrawLine(transform.position, trans)
-        Gizmos.DrawRay(transform.position, wallForce);
+        // Gizmos.color = Color.red;
+        // // Gizmos.DrawLine(transform.position, trans)
+        // Gizmos.DrawRay(transform.position, wallForce);
 
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, forceDistance);
+        // Gizmos.color = Color.cyan;
+        // Gizmos.DrawWireSphere(transform.position, forceDistance);
     }
 }

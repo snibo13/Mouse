@@ -75,7 +75,7 @@ public class Projectile : MonoBehaviour
                 enemyCollider.TryGetComponent<BasicEnemy>(out enemy);
                 enemy.takeDamage(damage);
                 Vector2 direction = (Vector2)enemy.transform.position - (Vector2)transform.position;
-                enemy.push(knockback * direction);
+                enemy.push(knockback * direction.normalized);
                 //TODO: Add damage falloff
             }
             Debug.Log("Exploded");
