@@ -44,6 +44,7 @@ public class Movement : MonoBehaviour
     public float queableJumpMargin = 1.5f;
 
     private bool canDoubleJump;
+    public float dashTime = 0.5f;
 
     public GameObject projectilePrefab;
 
@@ -64,6 +65,10 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        if (horizontal < 0)
+            face = -1;
+        if (dashing) return;
         Walk();
         Dash();
         jumpQueable();
@@ -81,10 +86,8 @@ public class Movement : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         if (horizontal < 0)
         {
-            face = -1;
             if (!Ub.GetBool("Moving")) {
                 Ub.SetBool("Moving", true);
-                
             }
 
 
@@ -226,25 +229,24 @@ public class Movement : MonoBehaviour
     private void Dash()
     {
         if (Input.GetButtonDown("Dash") && canDash) {
-                Debug.Log("Dash on Cooldown");
-                Vector2 dashVelocity = body.velocity;
-                dashVelocity.x = dashForce.x;
-                body.velocity = dashVelocity;
-                canDash = false;
-                dashing = true;
-                StartCoroutine("DashCooldown");
+            StartCoroutine("DashMove");
         }
-        
         
     }
 
-    IEnumerator DashCooldown()
+    private IEnumerator DashMove()
     {
-        // Debug.Log("Reset");
-        // attacking = false;
+        canDash = false;
+        dashing = true;
+        Vector2 dashVelocity = body.velocity;
+        dashVelocity.x = dashForce.x * face;
+        body.velocity = dashVelocity;
+        yield return new WaitForSeconds(dashTime);
+        dashing = false;
         yield return new WaitForSeconds(1.3f);
         Debug.Log("Dash Available");
         canDash = true;
+
     }
 
     private void WallJump()

@@ -73,8 +73,16 @@ public class BasicEnemy : MonoBehaviour
         body.velocity = new Vector2(0,0);
         Debug.Log(body.velocity);
         body.AddForce(knockback, ForceMode2D.Impulse);
-        // Debug.Log("Stunned");
-        // yield return new WaitForSeconds(0.2f);
+        Debug.Log("Stunned");
+        gameObject.GetComponent<FollowEnemy>().enabled = false;
+        StartCoroutine("stunBlock");
+    }
+
+    IEnumerator stunBlock()
+    {
+        Debug.Log("Free");
+        yield return new WaitForSeconds(1f);
+        gameObject.GetComponent<FollowEnemy>().enabled = true;
     }
 
     IEnumerator DelayReAttack()

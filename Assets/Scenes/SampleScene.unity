@@ -364,8 +364,9 @@ MonoBehaviour:
   coyoteTime: 0
   queueOffset: 1.5
   queableJumpMargin: 2
+  dashTime: 0.3
   projectilePrefab: {fileID: 8174598197979160844, guid: 77e2b2ccfb0f0104098d383d850febea, type: 3}
-  dashForce: {x: 10, y: 0}
+  dashForce: {x: 20, y: 0}
   hp: 100
   attackOneDamage: 10
   attackTwoDamage: 1
@@ -564,7 +565,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1111284122}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b58249acea86c564a9e7fbccbca30d1c, type: 3}
   m_Name: 
@@ -595,7 +596,6 @@ MonoBehaviour:
   maxAttackDamage: 15
   attackRange: 1.35
   attackTime: 0.3
-  body: {fileID: 0}
 --- !u!58 &1111284126
 CircleCollider2D:
   m_ObjectHideFlags: 0
