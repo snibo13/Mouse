@@ -220,7 +220,7 @@ public class Movement : MonoBehaviour
             else if (canDoubleJump) {
                 Debug.Log("Double Jump");
                 canDoubleJump = false;
-                body.AddForce(jumpForce / 1.5f, ForceMode2D.Impulse);
+                body.AddForce(jumpForce, ForceMode2D.Impulse);
                 Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffsetY;
                 platform = (GameObject)Instantiate(
                     doubleJumpPrefab,
@@ -265,6 +265,7 @@ public class Movement : MonoBehaviour
         {
             Vector2 wallJumpForce = new Vector2(wallTouch() * -wallForce, jumpForce.y * 0.6f);
             body.AddForce(wallJumpForce, ForceMode2D.Impulse);
+            Debug.Log("Wall Jump");
             canWallJump = false;
         }
     }

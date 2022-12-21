@@ -348,8 +348,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 8
-  jumpForce: {x: 0, y: 12}
-  wallForce: 10
+  jumpForce: {x: 0, y: 16}
+  wallForce: 16
   jumpSpeedBoost: 1.2
   accel: 90
   deaccel: 50
@@ -360,7 +360,7 @@ MonoBehaviour:
   gravity: 16
   groundedMargin: 0.1
   maxFallSpeed: -16
-  lowJumpModifier: 1
+  lowJumpModifier: 20
   coyoteTime: 0
   queueOffset: 1.5
   queableJumpMargin: 2
