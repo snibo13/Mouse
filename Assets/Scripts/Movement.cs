@@ -48,6 +48,7 @@ public class Movement : MonoBehaviour
 
     public GameObject projectilePrefab;
     public GameObject doubleJumpPrefab;
+    public GameObject shockwavePrefab;
     private GameObject platform;
 
     private Animator Ub;
@@ -334,6 +335,9 @@ public class Movement : MonoBehaviour
     public float bpRange = 3f;
     public float bpDamage = 1f;
     public float bpKnockback = 30f;
+    public float bpCooldown = 2f;
+
+    private bool bpOnCooldown = false;
 
     public float spawnOffset = 0.7f;
 
@@ -367,6 +371,10 @@ public class Movement : MonoBehaviour
 
     private void blackPanther()
     {
+        if (bpOnCooldown){
+            Debug.Log("On Cooldown");
+            return;
+        }
         Vector2 pos = (Vector2)transform.position;
         Collider2D[] hits = Physics2D.OverlapCircleAll(pos, bpRange, enemyLayer);
         BasicEnemy enemy;
@@ -382,6 +390,15 @@ public class Movement : MonoBehaviour
             //TODO: Add damage falloff
         }
         Debug.Log("Black Panther");
+        Instantiate (shockwavePrefab, transform.position, transform.rotation);
+        bpOnCooldown = true;
+        StartCoroutine("BpCooldown");
+    }
+
+    private IEnumerator BpCooldown()
+    {
+        yield return new WaitForSeconds(bpCooldown);
+        bpOnCooldown = false;
     }
 
     private void attackAction(int attack)

@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Platform : MonoBehaviour
+public class Disappear : MonoBehaviour
 {
+    public float lifetime = 0.2f;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,7 +19,7 @@ public class Platform : MonoBehaviour
 
     private IEnumerator FadeOut()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(lifetime);
         Destroy(gameObject);
     }
 }
