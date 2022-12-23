@@ -193,13 +193,13 @@ public class Movement : MonoBehaviour
         {
             if (grounded())
             {
-                Debug.Log("Regular Jump");
+                // Debug.Log("Regular Jump");
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
                 return;
             }
             else if (canCoyoteJump())
             {
-                Debug.Log("Coyote Jump");
+                // Debug.Log("Coyote Jump");
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
                 hasCoyoted = true;
                 return;
@@ -207,7 +207,7 @@ public class Movement : MonoBehaviour
 
             else if (canQueueJump)
             {
-                Debug.Log("Jump queued");
+                // Debug.Log("Jump queued");
                 queuedJump = true;
                 return;
             }
@@ -219,7 +219,7 @@ public class Movement : MonoBehaviour
             }
 
             else if (canDoubleJump) {
-                Debug.Log("Double Jump");
+                // Debug.Log("Double Jump");
                 canDoubleJump = false;
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
                 Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffsetY;
@@ -266,7 +266,7 @@ public class Movement : MonoBehaviour
         {
             Vector2 wallJumpForce = new Vector2(wallTouch() * -wallForce, jumpForce.y * 0.6f);
             body.AddForce(wallJumpForce, ForceMode2D.Impulse);
-            Debug.Log("Wall Jump");
+            // Debug.Log("Wall Jump");
             canWallJump = false;
         }
     }
@@ -292,7 +292,7 @@ public class Movement : MonoBehaviour
             hasCoyoted = false;
             if (queuedJump)
             {
-                Debug.Log("Jump from queue");
+                // Debug.Log("Jump from queue");
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
                 queuedJump = false;
                 return;
@@ -324,10 +324,10 @@ public class Movement : MonoBehaviour
 
     public float hp = 100;
     public float attackOneDamage = 5;
-    public float attackTwoDamage = 10;
+    public float attackTwoDamage = 1;
     public float attackThreeDamage = 20;
 
-    public float attackOneRange = 10;
+    public float attackOneRange = 3;
     public float attackTwoRange = 5;
     public float attackThreeRange = 2;
     private bool attacking = false;
@@ -384,7 +384,7 @@ public class Movement : MonoBehaviour
             enemyCollider.TryGetComponent<BasicEnemy>(out enemy);
             enemy.takeDamage(bpDamage);
             Debug.Log("Damaged");
-            Vector2 direction = (Vector2)enemy.transform.position - (Vector2)transform.position;
+            Vector2 direction = face * Vector2.right;
             Debug.Log("Push Movement");
             enemy.push(bpKnockback * direction.normalized);
             //TODO: Add damage falloff
@@ -450,7 +450,7 @@ public class Movement : MonoBehaviour
     {
         // Debug.Log("Reset");
         // attacking = false;
-        yield return new WaitForSeconds(1.3f);
+        yield return new WaitForSeconds(0.25f);
         Debug.Log("Reset");
         attacking = false;
     }
