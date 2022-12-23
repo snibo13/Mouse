@@ -43,6 +43,8 @@ public class Movement : MonoBehaviour
     public float queueOffset = 1.5f;
     public float queableJumpMargin = 1.5f;
 
+    private bool jumped;
+    private bool checkTime = true;
     private bool canDoubleJump;
     public float dashTime = 0.5f;
 
@@ -63,6 +65,7 @@ public class Movement : MonoBehaviour
         positions = new List<Vector3>();
         Ub = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
+        jumped = false;
     }
 
     // Update is called once per frame
@@ -74,11 +77,11 @@ public class Movement : MonoBehaviour
         if (dashing) return;
         Walk();
         Dash();
+        Groundtime();
         jumpQueable();
         Jump();
         Gravity();
         Attack();
-        Groundtime();
         // For debugging jump
         // positions.Add(transform.position);
         Ub.SetBool("Grounded", grounded());
@@ -123,8 +126,27 @@ public class Movement : MonoBehaviour
 
     private void Groundtime()
     {
-        if (grounded())
-            lastGrounded = Time.time;
+        if (!checkTime) {
+            Debug.Log("Skipping");
+            return;
+        }
+        if (jumped) {
+            Debug.Log(grounded());
+            if (grounded()) {
+                Debug.Log("Jumped and grounded");
+                jumped = false;
+            }
+        }
+        if (grounded()){
+            // Debug.Log("Grounded");
+            lastGrounded = Time.time;       
+        }
+    }
+
+    private IEnumerator PauseGroundcheck()
+    {
+        yield return new WaitForSeconds(0.1f);
+        checkTime = true;
     }
 
     private void GroundMovement(float horizontal)
@@ -193,14 +215,21 @@ public class Movement : MonoBehaviour
         {
             if (grounded())
             {
-                // Debug.Log("Regular Jump");
+                Debug.Log("Regular Jump");
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
+                jumped = true;
+                checkTime = false;
+                StartCoroutine("PauseGroundcheck");
+                Debug.Log(jumped);
                 return;
             }
             else if (canCoyoteJump())
             {
-                // Debug.Log("Coyote Jump");
+                Debug.Log("Coyote Jump");
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
+                jumped = true;
+                checkTime = false;
+                StartCoroutine("PauseGroundcheck");
                 hasCoyoted = true;
                 return;
             }
@@ -215,11 +244,16 @@ public class Movement : MonoBehaviour
             else if (onWall())
             {
                 WallJump();
+                jumped = true;
+                checkTime = false;
+                StartCoroutine("PauseGroundcheck");
                 return;
             }
 
             else if (canDoubleJump) {
-                // Debug.Log("Double Jump");
+                Debug.Log("Double Jump");
+                Debug.Log(jumped);
+                if (!jumped) return;
                 canDoubleJump = false;
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
                 Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffsetY;
@@ -294,6 +328,9 @@ public class Movement : MonoBehaviour
             {
                 // Debug.Log("Jump from queue");
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
+                jumped = true;
+                checkTime = false;
+                StartCoroutine("PauseGroundcheck");
                 queuedJump = false;
                 return;
             }
