@@ -14,6 +14,7 @@ public class FollowEnemy : MonoBehaviour
     public float forceConstant = -2.0f;
     private LayerMask groundLayer;
     private Rigidbody2D body;
+    private SpriteRenderer sr;
     private Vector2 wallForce;
     public float maxForce;
     public float targetMultiplier;
@@ -23,6 +24,7 @@ public class FollowEnemy : MonoBehaviour
     {
         groundLayer = 1 << LayerMask.NameToLayer("Ground");
         body = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -58,6 +60,7 @@ public class FollowEnemy : MonoBehaviour
 
                 body.velocity = Vector2.ClampMagnitude(body.velocity, speed);
             }
+            sr.flipX = (transform.position.x > target.position.x);
         }
     }
 

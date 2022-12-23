@@ -74,7 +74,10 @@ public class BasicEnemy : MonoBehaviour
         Debug.Log(body.velocity);
         body.AddForce(knockback, ForceMode2D.Impulse);
         Debug.Log("Stunned");
-        gameObject.GetComponent<FollowEnemy>().enabled = false;
+        FollowEnemy fe = gameObject.GetComponent<FollowEnemy>();
+        ParoleEnemy pe = gameObject.GetComponent<ParoleEnemy>();
+        if (fe != null) fe.enabled = false;
+        if (pe != null) pe.enabled = false;
         StartCoroutine("stunBlock");
     }
 
@@ -82,7 +85,10 @@ public class BasicEnemy : MonoBehaviour
     {
         Debug.Log("Free");
         yield return new WaitForSeconds(1f);
-        gameObject.GetComponent<FollowEnemy>().enabled = true;
+        FollowEnemy fe = gameObject.GetComponent<FollowEnemy>();
+        ParoleEnemy pe = gameObject.GetComponent<ParoleEnemy>();
+        if (fe != null) fe.enabled = true;
+        if (pe != null) pe.enabled = true;
     }
 
     IEnumerator DelayReAttack()
