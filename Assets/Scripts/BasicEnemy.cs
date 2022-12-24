@@ -75,7 +75,7 @@ public class BasicEnemy : MonoBehaviour
         body.AddForce(knockback, ForceMode2D.Impulse);
         Debug.Log("Stunned");
         FollowEnemy fe = gameObject.GetComponent<FollowEnemy>();
-        ParoleEnemy pe = gameObject.GetComponent<ParoleEnemy>();
+        PatrolEnemy pe = gameObject.GetComponent<PatrolEnemy>();
         if (fe != null) fe.enabled = false;
         if (pe != null) pe.enabled = false;
         StartCoroutine("stunBlock");
@@ -86,7 +86,7 @@ public class BasicEnemy : MonoBehaviour
         Debug.Log("Free");
         yield return new WaitForSeconds(1f);
         FollowEnemy fe = gameObject.GetComponent<FollowEnemy>();
-        ParoleEnemy pe = gameObject.GetComponent<ParoleEnemy>();
+        PatrolEnemy pe = gameObject.GetComponent<PatrolEnemy>();
         if (fe != null) fe.enabled = true;
         if (pe != null) pe.enabled = true;
     }

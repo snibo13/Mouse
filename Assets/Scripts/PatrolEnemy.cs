@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParoleEnemy : MonoBehaviour
+public class PatrolEnemy : MonoBehaviour
 {
     public Vector2 leftEdge;
     public Vector2 rightEdge;
