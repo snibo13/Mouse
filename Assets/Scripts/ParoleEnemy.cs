@@ -7,16 +7,22 @@ public class ParoleEnemy : MonoBehaviour
     public Vector2 leftEdge;
     public Vector2 rightEdge;
     public float maxSpeed;
+    public float pursuingBoost = 1f;
+    public Transform target;
+    public float detectionRange;
+    public float escapeRange;
+    private bool detected = false;
 
     private float epsilon = 2f;
     private int face = -1;
-    private Vector2 target;
+    private Vector2 destination;
     private Rigidbody2D body;
+    private bool wasChasing = false;
     private SpriteRenderer sr;
     // Start is called before the first frame update
     void Start()
     {
-        target = leftEdge;
+        destination = leftEdge;
         face = -1;
         body = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
@@ -25,14 +31,47 @@ public class ParoleEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        body.velocity = Vector2.right * face * maxSpeed;
         
-        if (Vector2.Distance(transform.position, target) < epsilon) {
-            if (target == leftEdge) target = rightEdge;
-            else if (target == rightEdge) target = leftEdge;
-            face = face * -1;
-            sr.flipX = (face == 1);
+
+        if (Vector2.Distance(target.position, transform.position) < detectionRange)
+            detected = true;
+        else if (Vector2.Distance(target.position, transform.position) > escapeRange)
+            detected = false;
+
+        if (detected)
+        {
+           Debug.Log("Pursuing");
+    
+            
+                if (transform.position.x > target.position.x) face = -1;
+                else face = 1;
+                sr.flipX = (face == 1);
+                body.velocity = Vector2.right * face * maxSpeed * pursuingBoost;
+                if (!wasChasing) wasChasing = true;
+        } else {
+            Debug.Log("Paroling");
+            if (wasChasing) {
+                if (Vector2.Distance(transform.position, leftEdge) < Vector2.Distance(transform.position, rightEdge))
+            {
+                destination = rightEdge;
+                face = 1;
+            }
+            else {destination = leftEdge; face = -1;}
+            wasChasing = false;
+            }
+            
+            
+    
+            if (Vector2.Distance(transform.position, destination) < epsilon) {
+                if (destination == leftEdge) destination = rightEdge;
+                else if (destination == rightEdge) destination = leftEdge;
+                face = face * -1;
+                sr.flipX = (face == 1);
+            }
+            body.velocity = Vector2.right * face * maxSpeed;
         }
+            
+        
             
         
     }
