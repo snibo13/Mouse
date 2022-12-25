@@ -127,13 +127,11 @@ public class Movement : MonoBehaviour
     private void Groundtime()
     {
         if (!checkTime) {
-            Debug.Log("Skipping");
             return;
         }
         if (jumped) {
             Debug.Log(grounded());
             if (grounded()) {
-                Debug.Log("Jumped and grounded");
                 jumped = false;
             }
         }
@@ -215,7 +213,6 @@ public class Movement : MonoBehaviour
         {
             if (grounded())
             {
-                Debug.Log("Regular Jump");
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
                 jumped = true;
                 checkTime = false;
@@ -225,7 +222,6 @@ public class Movement : MonoBehaviour
             }
             else if (canCoyoteJump())
             {
-                Debug.Log("Coyote Jump");
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
                 jumped = true;
                 checkTime = false;
@@ -251,8 +247,6 @@ public class Movement : MonoBehaviour
             }
 
             else if (canDoubleJump) {
-                Debug.Log("Double Jump");
-                Debug.Log(jumped);
                 if (!jumped) return;
                 canDoubleJump = false;
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
@@ -289,7 +283,6 @@ public class Movement : MonoBehaviour
         yield return new WaitForSeconds(dashTime);
         dashing = false;
         yield return new WaitForSeconds(1.3f);
-        Debug.Log("Dash Available");
         canDash = true;
 
     }
@@ -409,7 +402,6 @@ public class Movement : MonoBehaviour
     private void blackPanther()
     {
         if (bpOnCooldown){
-            Debug.Log("On Cooldown");
             return;
         }
         Vector2 pos = (Vector2)transform.position;
@@ -420,13 +412,10 @@ public class Movement : MonoBehaviour
         {
             enemyCollider.TryGetComponent<BasicEnemy>(out enemy);
             enemy.takeDamage(bpDamage);
-            Debug.Log("Damaged");
             Vector2 direction = face * Vector2.right;
-            Debug.Log("Push Movement");
             enemy.push(bpKnockback * direction.normalized);
             //TODO: Add damage falloff
         }
-        Debug.Log("Black Panther");
         Instantiate (shockwavePrefab, transform.position, transform.rotation);
         bpOnCooldown = true;
         StartCoroutine("BpCooldown");
@@ -442,7 +431,6 @@ public class Movement : MonoBehaviour
     {
         if (attacking)
             return;
-        Debug.Log("Attacking");
         attacking = true;
         Vector2 attackVector;
         float attackDamage;
@@ -488,7 +476,6 @@ public class Movement : MonoBehaviour
         // Debug.Log("Reset");
         // attacking = false;
         yield return new WaitForSeconds(0.25f);
-        Debug.Log("Reset");
         attacking = false;
     }
 

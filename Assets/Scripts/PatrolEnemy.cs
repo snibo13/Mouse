@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PatrolEnemy : MonoBehaviour
 {
-    public Vector2 leftEdge;
-    public Vector2 rightEdge;
-    public float maxSpeed;
+    public float distance = 5f;
+    private Vector2 leftEdge;
+    private Vector2 rightEdge;
+    public float maxSpeed = 2f;
     public float pursuingBoost = 1f;
     public Transform target;
     public float detectionRange;
@@ -22,6 +23,8 @@ public class PatrolEnemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        leftEdge = (Vector2) transform.position - new Vector2(distance,0);
+        rightEdge = (Vector2) transform.position + new Vector2(distance,0);
         destination = leftEdge;
         face = -1;
         body = GetComponent<Rigidbody2D>();
@@ -40,7 +43,6 @@ public class PatrolEnemy : MonoBehaviour
 
         if (detected)
         {
-           Debug.Log("Pursuing");
     
             
                 if (transform.position.x > target.position.x) face = -1;
@@ -49,7 +51,6 @@ public class PatrolEnemy : MonoBehaviour
                 body.velocity = Vector2.right * face * maxSpeed * pursuingBoost;
                 if (!wasChasing) wasChasing = true;
         } else {
-            Debug.Log("Paroling");
             if (wasChasing) {
                 if (Vector2.Distance(transform.position, leftEdge) < Vector2.Distance(transform.position, rightEdge))
             {
@@ -79,8 +80,8 @@ public class PatrolEnemy : MonoBehaviour
     public void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(leftEdge, 1f);
-        Gizmos.DrawWireSphere(rightEdge, 1f);
+        Gizmos.DrawLine((Vector2) transform.position - new Vector2(distance,0), (Vector2) transform.position + new Vector2(distance,0));
+        
     }
 
 }

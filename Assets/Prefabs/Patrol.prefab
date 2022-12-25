@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8915215189845518765}
   - component: {fileID: 8915215189845518764}
-  - component: {fileID: 8915215189845518755}
   - component: {fileID: 8915215189845518754}
   - component: {fileID: 8915215189845518767}
   - component: {fileID: 8915215189845518766}
+  - component: {fileID: 81582562919710629}
   m_Layer: 7
   m_Name: Patrol
   m_TagString: Untagged
@@ -88,21 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8915215189845518755
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8915215189845518753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00c3629f1fe3eb94fb768bb7edee5142, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leftEdge: {x: 1, y: 5.5}
-  rightEdge: {x: 8, y: 5.5}
-  maxSpeed: 1
 --- !u!114 &8915215189845518754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,3 +152,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &81582562919710629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8915215189845518753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c3629f1fe3eb94fb768bb7edee5142, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftEdge: {x: 0, y: 0}
+  rightEdge: {x: 0, y: 0}
+  maxSpeed: 0
+  pursuingBoost: 1
+  target: {fileID: 0}
+  detectionRange: 0
+  escapeRange: 0
