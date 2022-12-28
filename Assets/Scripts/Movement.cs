@@ -51,6 +51,7 @@ public class Movement : MonoBehaviour
     public GameObject projectilePrefab;
     public GameObject doubleJumpPrefab;
     public GameObject shockwavePrefab;
+    public GameObject spellPrefab;
     private GameObject platform;
 
     private Animator Ub;
@@ -71,16 +72,22 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         float horizontal = Input.GetAxisRaw("Horizontal");
         if (horizontal < 0)
             face = -1;
-        if (dashing) return;
-        Walk();
+        
+        
+        
         Dash();
         Groundtime();
         jumpQueable();
         Jump();
         Gravity();
+        Ub.SetBool("Grounded", grounded());
+        Ub.SetFloat("Vy", body.velocity.y);
+        if (dashing || attacking) return;
+        Walk();
         Attack();
         // For debugging jump
         // positions.Add(transform.position);
@@ -130,7 +137,6 @@ public class Movement : MonoBehaviour
             return;
         }
         if (jumped) {
-            Debug.Log(grounded());
             if (grounded()) {
                 jumped = false;
             }
@@ -369,6 +375,8 @@ public class Movement : MonoBehaviour
 
     private bool bpOnCooldown = false;
 
+    public float attackFreeze = 0.4f;
+
     public float spawnOffset = 0.7f;
 
     private void Attack()
@@ -376,15 +384,33 @@ public class Movement : MonoBehaviour
         if (Input.GetButtonDown("Action1"))
         {
             rangedAttack();
+            attacking = true;
+            body.velocity = new Vector2(0,0);
+            StartCoroutine("AttackFreeze");
         }
         else if (Input.GetButtonDown("Action2"))
         {
             attackAction(2);
+            Vector2 spawnPoint = (Vector2)transform.position + Vector2.right * face * spawnOffset;
+            Instantiate (spellPrefab, spawnPoint, transform.rotation);
+            attacking = true;
+            body.velocity = new Vector2(0,0);
+            StartCoroutine("AttackFreeze");
         }
         else if (Input.GetButtonDown("Action3"))
         {
             blackPanther();
+            attacking = true;
+            body.velocity = new Vector2(0,0);
+            StartCoroutine("AttackFreeze");
         }
+        
+    }
+
+    private IEnumerator AttackFreeze()
+    {
+        yield return new WaitForSeconds(attackFreeze);
+        attacking = false;
     }
 
     private void rangedAttack()
