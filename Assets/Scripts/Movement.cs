@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    // Unlocking abilities
+    private bool doubleJumpUnlocked = false;
+    private bool dashUnlocked = false;
+    private bool shockwaveUnlocked = false;
+
+    public enum abilities {
+        doubleJump,
+        dash,
+        shockwave
+    }
     public float maxSpeed = 10;
     public Vector2 jumpForce = new Vector2(0, 10);
     public float wallForce = 10;
@@ -89,13 +99,26 @@ public class Movement : MonoBehaviour
         if (dashing || attacking) return;
         Walk();
         Attack();
-        // For debugging jump
-        // positions.Add(transform.position);
         Ub.SetBool("Grounded", grounded());
         Ub.SetFloat("Vy", body.velocity.y);
     }
 
+    public void Unlocking(abilities ability)
+    {
+        switch (ability) {
+            case abilities.doubleJump:
+                doubleJumpUnlocked = true;
+                break;
+            case abilities.dash:
+                dashUnlocked = true;
+                break;
+            case abilities.shockwave:
+                shockwaveUnlocked = true;
+                break;
+        }
+    }
 
+#region Movement
     private void Walk()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
@@ -113,7 +136,6 @@ public class Movement : MonoBehaviour
             if (!Ub.GetBool("Moving"))
             {
                 Ub.SetBool("Moving", true);
-                // sprite.flipX = face;
             }
                 
         }
@@ -252,7 +274,7 @@ public class Movement : MonoBehaviour
                 return;
             }
 
-            else if (canDoubleJump) {
+            else if (canDoubleJump && doubleJumpUnlocked) {
                 if (!jumped) return;
                 canDoubleJump = false;
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
@@ -273,7 +295,7 @@ public class Movement : MonoBehaviour
 
     private void Dash()
     {
-        if (Input.GetButtonDown("Dash") && canDash) {
+        if (Input.GetButtonDown("Dash") && canDash && dashUnlocked) {
             StartCoroutine("DashMove");
         }
         
@@ -356,6 +378,8 @@ public class Movement : MonoBehaviour
         }
     }
 
+    #endregion
+
 #region Attacks
 
     public float hp = 100;
@@ -397,7 +421,7 @@ public class Movement : MonoBehaviour
             body.velocity = new Vector2(0,0);
             StartCoroutine("AttackFreeze");
         }
-        else if (Input.GetButtonDown("Action3"))
+        else if (Input.GetButtonDown("Action3") && shockwaveUnlocked)
         {
             blackPanther();
             attacking = true;
@@ -519,7 +543,7 @@ public class Movement : MonoBehaviour
     }
 #endregion Attacks
 
-    // Collision state checks
+#region Collisions
 
     private enum Direction
     {
@@ -577,11 +601,6 @@ public class Movement : MonoBehaviour
         return Physics2D.Linecast(transform.position, vect, 1 << LayerMask.NameToLayer("Ground"));
     }
 
-    private bool circleCollidesWithWorld(Vector2 dir)
-    {
-        Vector2 pos = (Vector2)transform.position + dir * detectionOffsetX;
-        return Physics2D.OverlapCircle(pos, detectionOffsetX, groundLayer);
-    }
 
     private int wallTouch()
     {
@@ -597,6 +616,8 @@ public class Movement : MonoBehaviour
         return wallTouch() != 0;
     }
 
+
+#endregion
     public void OnDrawGizmos()
     {
         if (!Application.IsPlaying(gameObject))
