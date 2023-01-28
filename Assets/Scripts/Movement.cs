@@ -245,7 +245,6 @@ public class Movement : MonoBehaviour
                 jumped = true;
                 checkTime = false;
                 StartCoroutine("PauseGroundcheck");
-                Debug.Log(jumped);
                 return;
             }
             else if (canCoyoteJump())
@@ -540,6 +539,20 @@ public class Movement : MonoBehaviour
     private void die()
     {
         Destroy(gameObject);
+    }
+
+    public void push(Vector2 knockback)
+    {
+        body.velocity = new Vector2(0,0);
+        body.AddForce(knockback, ForceMode2D.Impulse);
+        StartCoroutine("stunBlock");
+    }
+
+    IEnumerator stunBlock()
+    {
+        Debug.Log("Free");
+        yield return new WaitForSeconds(1f);
+        
     }
 #endregion Attacks
 

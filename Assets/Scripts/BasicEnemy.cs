@@ -69,11 +69,8 @@ public class BasicEnemy : MonoBehaviour
 
     public void push(Vector2 knockback)
     {
-        Debug.Log("Pushed");
         body.velocity = new Vector2(0,0);
-        Debug.Log(body.velocity);
         body.AddForce(knockback, ForceMode2D.Impulse);
-        Debug.Log("Stunned");
         FollowEnemy fe = gameObject.GetComponent<FollowEnemy>();
         PatrolEnemy pe = gameObject.GetComponent<PatrolEnemy>();
         if (fe != null) fe.enabled = false;

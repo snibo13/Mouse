@@ -20,6 +20,11 @@ public class Boss : MonoBehaviour
     private Animator Ub;
     private float lastUpdateTime;
     public float delay;
+    public float spawnOffset;
+    private int face = -1;
+    public GameObject wavePrefab;
+    public GameObject roarPrefab;
+    private GameObject wave;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,22 +52,53 @@ public class Boss : MonoBehaviour
         Ub.SetBool("Roaring", false);
         Ub.SetBool("Stomping", false);
     }
+    private bool spawned = false;
+    public float spawnDelay = 4;
+
+    private IEnumerator spawnFreeze()
+    {
+        yield return new WaitForSeconds(spawnDelay);
+        spawned = false;
+    }
 
     private void updateState()
     {
         var newStateRandom = Random.Range(0, 100);
-        Debug.Log(newStateRandom);
         if (newStateRandom < stompingProbability) {
             currentState = State.Stomping;
             Ub.SetBool("Stomping", true);
-            Debug.Log("Stomping");
+            if (!spawned) {
+                spawned = true;
+                float distance = transform.position.x + face * spawnOffset;
+                Vector2 spawnPoint = new Vector2(distance, 1.75f);
+                
+                GameObject newProjectile = (GameObject)Instantiate(
+                    wavePrefab,
+                    spawnPoint,
+                    transform.rotation
+                );
+            }
+            StartCoroutine("spawnFreeze");
+            
+            
         } else if (newStateRandom < stompingProbability + idleProbability) {
             currentState = State.Idle;
-            Debug.Log("Idle");
         } else if (newStateRandom >= stompingProbability + idleProbability) {
             Ub.SetBool("Roaring", true);
             currentState = State.Roaring;
-            Debug.Log("Roaring");
+            if (!spawned) {
+                spawned = true;
+                float distance = transform.position.x + face * spawnOffset;
+                Vector2 spawnPoint = new Vector2(distance, 4f);
+                
+                GameObject newProjectile = (GameObject)Instantiate(
+                    roarPrefab,
+                    spawnPoint,
+                    transform.rotation
+                );
+            }
+            StartCoroutine("spawnFreeze");
+            Debug.Log("Roar");
         }
     }
 }
