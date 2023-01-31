@@ -70,7 +70,7 @@ public class Boss : MonoBehaviour
             if (!spawned) {
                 spawned = true;
                 float distance = transform.position.x + face * spawnOffset;
-                Vector2 spawnPoint = new Vector2(distance, 1.75f);
+                Vector2 spawnPoint = new Vector2(distance, transform.position.y - 5f);
                 
                 GameObject newProjectile = (GameObject)Instantiate(
                     wavePrefab,
@@ -89,7 +89,7 @@ public class Boss : MonoBehaviour
             if (!spawned) {
                 spawned = true;
                 float distance = transform.position.x + face * spawnOffset;
-                Vector2 spawnPoint = new Vector2(distance, 4f);
+                Vector2 spawnPoint = new Vector2(distance, transform.position.y - 2.5f);
                 
                 GameObject newProjectile = (GameObject)Instantiate(
                     roarPrefab,

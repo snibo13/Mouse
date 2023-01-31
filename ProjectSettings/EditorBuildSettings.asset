@@ -17,5 +17,29 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Second Stage.unity
     guid: 328e31b2e18d1ab45b2b3e677dd5ebd4
+  - enabled: 1
+    path: Assets/Scenes/Door Room 1.unity
+    guid: cd75ac70aba31e746ab16a887adc6f55
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/Key Room Top.unity
+    guid: 9e5a688d7e01e6e4e8d8319891a88ea8
+  - enabled: 0
+    path: 
+    guid: 40ff36836cbba5a4a98d87c4ae1affc1
+  - enabled: 1
+    path: Assets/Scenes/Overpass.unity
+    guid: e22b8045e9253494e9cb1b0e55185f9e
+  - enabled: 1
+    path: Assets/Scenes/Door Room.unity
+    guid: 9e9d77a025a82714488b7a534b377615
+  - enabled: 1
+    path: Assets/Scenes/Key Room.unity
+    guid: 412986db966bffa4499f16eb3d9457be
+  - enabled: 1
+    path: Assets/Scenes/Backdoor.unity
+    guid: 25f8c70a60be16b42804ea6f8556ef77
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: d113c2cbced6cb045b7c599c198c619c, type: 2}

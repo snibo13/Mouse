@@ -9,6 +9,9 @@ public class Movement : MonoBehaviour
     private bool dashUnlocked = false;
     private bool shockwaveUnlocked = false;
 
+    // Unlcoking locked doors
+    public bool lock1 = true;
+
     public enum abilities {
         doubleJump,
         dash,
