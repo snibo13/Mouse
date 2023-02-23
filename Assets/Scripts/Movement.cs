@@ -12,11 +12,13 @@ public class Movement : MonoBehaviour
     // Unlcoking locked doors
     public bool lock1 = true;
 
-    public enum abilities {
+    public enum abilities
+    {
         doubleJump,
         dash,
         shockwave
     }
+
     public float maxSpeed = 10;
     public Vector2 jumpForce = new Vector2(0, 10);
     public float wallForce = 10;
@@ -50,6 +52,7 @@ public class Movement : MonoBehaviour
     private float lastGrounded;
     public float coyoteTime;
     private bool hasCoyoted = false;
+
     // Jump margin
     private bool queuedJump = false;
     private bool canQueueJump = false;
@@ -80,18 +83,19 @@ public class Movement : MonoBehaviour
         Ub = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
         jumped = false;
+        cameraTransform = GameObject.Find("Canvas").transform;
+        showHearts();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        // clearHearts();
+        // showHearts();
         float horizontal = Input.GetAxisRaw("Horizontal");
         if (horizontal < 0)
             face = -1;
-        
-        
-        
+
         Dash();
         Groundtime();
         jumpQueable();
@@ -99,7 +103,8 @@ public class Movement : MonoBehaviour
         Gravity();
         Ub.SetBool("Grounded", grounded());
         Ub.SetFloat("Vy", body.velocity.y);
-        if (dashing || attacking) return;
+        if (dashing || attacking)
+            return;
         Walk();
         Attack();
         Ub.SetBool("Grounded", grounded());
@@ -108,7 +113,8 @@ public class Movement : MonoBehaviour
 
     public void Unlocking(abilities ability)
     {
-        switch (ability) {
+        switch (ability)
+        {
             case abilities.doubleJump:
                 doubleJumpUnlocked = true;
                 break;
@@ -121,26 +127,51 @@ public class Movement : MonoBehaviour
         }
     }
 
+#region UI
+    public GameObject heart;
+    private float x_offset = -2;
+    private float y_offset = -4;
+    private float heart_width = 1;
+    private GameObject[] hearts = new GameObject[5];
+    public Transform cameraTransform;
+    public GameObject heart_percent;
+
+    public void showHearts()
+    {
+        float offset = -40 * (hp - 100) / 100;
+        heart_percent.GetComponent<RectTransform>().localPosition = new Vector2(0, offset);
+    }
+
+    public void clearHearts()
+    {
+        for (int i = 0; i < hearts.Length; i++)
+        {
+            if (hearts[i] != null)
+            {
+                Destroy(hearts[i]);
+            }
+        }
+    }
+#endregion
+
 #region Movement
     private void Walk()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         if (horizontal < 0)
         {
-            if (!Ub.GetBool("Moving")) {
+            if (!Ub.GetBool("Moving"))
+            {
                 Ub.SetBool("Moving", true);
             }
-
-
         }
-            
-        else if (horizontal > 0) {
+        else if (horizontal > 0)
+        {
             face = 1;
             if (!Ub.GetBool("Moving"))
             {
                 Ub.SetBool("Moving", true);
             }
-                
         }
         else
             Ub.SetBool("Moving", false);
@@ -153,22 +184,25 @@ public class Movement : MonoBehaviour
             AerialMovement(horizontal);
         }
         sprite.flipX = (face == -1);
-        
     }
 
     private void Groundtime()
     {
-        if (!checkTime) {
+        if (!checkTime)
+        {
             return;
         }
-        if (jumped) {
-            if (grounded()) {
+        if (jumped)
+        {
+            if (grounded())
+            {
                 jumped = false;
             }
         }
-        if (grounded()){
+        if (grounded())
+        {
             // Debug.Log("Grounded");
-            lastGrounded = Time.time;       
+            lastGrounded = Time.time;
         }
     }
 
@@ -259,14 +293,12 @@ public class Movement : MonoBehaviour
                 hasCoyoted = true;
                 return;
             }
-
             else if (canQueueJump)
             {
                 // Debug.Log("Jump queued");
                 queuedJump = true;
                 return;
             }
-
             else if (onWall())
             {
                 WallJump();
@@ -275,17 +307,14 @@ public class Movement : MonoBehaviour
                 StartCoroutine("PauseGroundcheck");
                 return;
             }
-
-            else if (canDoubleJump && doubleJumpUnlocked) {
-                if (!jumped) return;
+            else if (canDoubleJump && doubleJumpUnlocked)
+            {
+                if (!jumped)
+                    return;
                 canDoubleJump = false;
                 body.AddForce(jumpForce, ForceMode2D.Impulse);
                 Vector2 pos = (Vector2)transform.position + Vector2.down * detectionOffsetY;
-                platform = (GameObject)Instantiate(
-                    doubleJumpPrefab,
-                    pos,
-                    transform.rotation
-                );
+                platform = (GameObject)Instantiate(doubleJumpPrefab, pos, transform.rotation);
                 return;
             }
         }
@@ -297,10 +326,10 @@ public class Movement : MonoBehaviour
 
     private void Dash()
     {
-        if (Input.GetButtonDown("Dash") && canDash && dashUnlocked) {
+        if (Input.GetButtonDown("Dash") && canDash && dashUnlocked)
+        {
             StartCoroutine("DashMove");
         }
-        
     }
 
     private IEnumerator DashMove()
@@ -314,7 +343,6 @@ public class Movement : MonoBehaviour
         dashing = false;
         yield return new WaitForSeconds(1.3f);
         canDash = true;
-
     }
 
     private void WallJump()
@@ -411,26 +439,25 @@ public class Movement : MonoBehaviour
         {
             rangedAttack();
             attacking = true;
-            body.velocity = new Vector2(0,0);
+            body.velocity = new Vector2(0, 0);
             StartCoroutine("AttackFreeze");
         }
         else if (Input.GetButtonDown("Action2"))
         {
             attackAction(2);
             Vector2 spawnPoint = (Vector2)transform.position + Vector2.right * face * spawnOffset;
-            Instantiate (spellPrefab, spawnPoint, transform.rotation);
+            Instantiate(spellPrefab, spawnPoint, transform.rotation);
             attacking = true;
-            body.velocity = new Vector2(0,0);
+            body.velocity = new Vector2(0, 0);
             StartCoroutine("AttackFreeze");
         }
         else if (Input.GetButtonDown("Action3") && shockwaveUnlocked)
         {
             blackPanther();
             attacking = true;
-            body.velocity = new Vector2(0,0);
+            body.velocity = new Vector2(0, 0);
             StartCoroutine("AttackFreeze");
         }
-        
     }
 
     private IEnumerator AttackFreeze()
@@ -453,7 +480,8 @@ public class Movement : MonoBehaviour
 
     private void blackPanther()
     {
-        if (bpOnCooldown){
+        if (bpOnCooldown)
+        {
             return;
         }
         Vector2 pos = (Vector2)transform.position;
@@ -468,7 +496,7 @@ public class Movement : MonoBehaviour
             enemy.push(bpKnockback * direction.normalized);
             //TODO: Add damage falloff
         }
-        Instantiate (shockwavePrefab, transform.position, transform.rotation);
+        Instantiate(shockwavePrefab, transform.position, transform.rotation);
         bpOnCooldown = true;
         StartCoroutine("BpCooldown");
     }
@@ -537,6 +565,7 @@ public class Movement : MonoBehaviour
         if (hp <= 0)
             die();
         Debug.Log(hp);
+        showHearts();
     }
 
     private void die()
@@ -546,7 +575,7 @@ public class Movement : MonoBehaviour
 
     public void push(Vector2 knockback)
     {
-        body.velocity = new Vector2(0,0);
+        body.velocity = new Vector2(0, 0);
         body.AddForce(knockback, ForceMode2D.Impulse);
         StartCoroutine("stunBlock");
     }
@@ -555,7 +584,6 @@ public class Movement : MonoBehaviour
     {
         Debug.Log("Free");
         yield return new WaitForSeconds(1f);
-        
     }
 #endregion Attacks
 
@@ -604,7 +632,7 @@ public class Movement : MonoBehaviour
 
     private void jumpQueable()
     {
-        Vector2 pos = (Vector2)transform.position + Vector2.down * queueOffset; 
+        Vector2 pos = (Vector2)transform.position + Vector2.down * queueOffset;
         Vector2 size = new Vector2(
             GetComponent<SpriteRenderer>().bounds.size.x / 8f,
             groundedMargin
@@ -616,7 +644,6 @@ public class Movement : MonoBehaviour
     {
         return Physics2D.Linecast(transform.position, vect, 1 << LayerMask.NameToLayer("Ground"));
     }
-
 
     private int wallTouch()
     {
@@ -631,7 +658,6 @@ public class Movement : MonoBehaviour
     {
         return wallTouch() != 0;
     }
-
 
 #endregion
     public void OnDrawGizmos()
@@ -654,13 +680,8 @@ public class Movement : MonoBehaviour
         );
         Gizmos.DrawWireCube(pos, size);
 
-
-
         Gizmos.color = Color.green;
-        size = new Vector2(
-            GetComponent<SpriteRenderer>().bounds.size.x / 8f,
-            queableJumpMargin
-        );
+        size = new Vector2(GetComponent<SpriteRenderer>().bounds.size.x / 8f, queableJumpMargin);
         pos = (Vector2)transform.position + Vector2.down * queueOffset;
         Gizmos.DrawWireCube(pos, size);
         // pos = (Vector2)transform.position + Vector2.down * detectionOffset;
