@@ -45,7 +45,7 @@ public class Movement : MonoBehaviour
     private LayerMask groundLayer;
     private List<Vector3> positions;
     private bool canWallJump;
-    private int face { get; set; }
+    public int face { get; set; }
     private LayerMask enemyLayer;
 
     // Coyote
@@ -66,8 +66,7 @@ public class Movement : MonoBehaviour
 
     public GameObject projectilePrefab;
     public GameObject doubleJumpPrefab;
-    public GameObject shockwavePrefab;
-    public GameObject spellPrefab;
+
     private GameObject platform;
 
     private Animator Ub;
@@ -83,8 +82,6 @@ public class Movement : MonoBehaviour
         Ub = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
         jumped = false;
-        cameraTransform = GameObject.Find("Canvas").transform;
-        showHearts();
     }
 
     // Update is called once per frame
@@ -111,23 +108,6 @@ public class Movement : MonoBehaviour
         Ub.SetFloat("Vy", body.velocity.y);
     }
 
-    public void Unlocking(abilities ability)
-    {
-        switch (ability)
-        {
-            case abilities.doubleJump:
-                doubleJumpUnlocked = true;
-                break;
-            case abilities.dash:
-                dashUnlocked = true;
-                break;
-            case abilities.shockwave:
-                shockwaveUnlocked = true;
-                break;
-        }
-    }
-
-#region Movement
     private void Walk()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
@@ -293,6 +273,8 @@ public class Movement : MonoBehaviour
         }
     }
 
+    
+
     private bool canDash = true;
     private bool dashing = false;
     public Vector2 dashForce;
@@ -381,11 +363,9 @@ public class Movement : MonoBehaviour
         }
     }
 
-    #endregion
-
 #region Attacks
 
-    public float hp = 100;
+    // public float hp = 100;
     public float attackOneDamage = 5;
     public float attackTwoDamage = 1;
     public float attackThreeDamage = 20;
@@ -530,20 +510,6 @@ public class Movement : MonoBehaviour
         // attacking = false;
         yield return new WaitForSeconds(0.25f);
         attacking = false;
-    }
-
-    public void takeDamage(float damage)
-    {
-        hp -= damage;
-        if (hp <= 0)
-            die();
-        Debug.Log(hp);
-        showHearts();
-    }
-
-    private void die()
-    {
-        Destroy(gameObject);
     }
 
     public void push(Vector2 knockback)

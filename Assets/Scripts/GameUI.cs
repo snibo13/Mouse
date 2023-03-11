@@ -2,21 +2,25 @@ using UnityEngine;
 
 public class GameUI : MonoBehaviour
 {
-    public GameObject heart;
-    private float x_offset = -2;
-    private float y_offset = -4;
-    private float heart_width = 1;
     private GameObject[] hearts = new GameObject[5];
-    public Transform cameraTransform;
     public GameObject heart_percent;
 
-    void Start() { }
+    private Character character;
 
-    void Update() { }
+    void Start()
+    {
+        character = GameObject.Find("Character").GetComponent<Character>();
+        heart_percent = GameObject.Find("Heart Percent");
+    }
+
+    void Update()
+    {
+        showHearts();
+    }
 
     public void showHearts()
     {
-        float offset = -40 * (hp - 100) / 100;
+        float offset = -40 * (character.getHP() - 100) / 100;
         heart_percent.GetComponent<RectTransform>().localPosition = new Vector2(0, offset);
     }
 

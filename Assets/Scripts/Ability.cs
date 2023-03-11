@@ -1,6 +1,50 @@
 using UnityEngine;
 using System.Collections;
 
+public static class PlayerAbilities
+{
+    public static LayerMask enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
+    public static GameObject shockwavePrefab;
+    public static GameObject swipePrefab;
+    public static GameObject shotPrefab;
+
+    public static Effect shotEffect = new Effect(0, 0);
+    public static RangedAbility shot = new RangedAbility(
+        shotEffect,
+        enemyLayer,
+        0f,
+        0f,
+        shotPrefab,
+        0.7f
+    );
+
+    public static Effect swipeEffect = new Effect(30, 1);
+    public static CloseAbility swipe = new CloseAbility(
+        swipeEffect,
+        enemyLayer,
+        5f,
+        0.4f,
+        swipePrefab
+    );
+
+    public static Effect shockwaveEffect = new Effect(30, 2);
+    public static CloseAbility shockwaveAbility = new CloseAbility(
+        shockwaveEffect,
+        enemyLayer,
+        3.0f,
+        2.0f,
+        shockwavePrefab
+    );
+}
+
+public static class EnemyAbilities
+{
+    public static LayerMask playerMask = 1 << LayerMask.NameToLayer("Player");
+
+    public static Effect slashEffect = new Effect(5, 1);
+    public static CloseAbility 
+}
+
 public abstract class Ability : MonoBehaviour
 {
     protected Effect effect { get; set; }
@@ -44,6 +88,14 @@ public class CloseAbility : Ability
             range,
             targetLayer
         );
+        Character enemy;
+        foreach (Collider2D hit in abilityHits)
+        {
+            hit.TryGetComponent<Character>(out enemy);
+            enemy.takeDamage(effect.damage);
+            Vector2 pushDirection = direction * Vector2.right;
+            enemy.movmement.push(effect.knockback * pushDirection.normalized);
+        }
         IEnumerator rA = resetAvailability(this);
         StartCoroutine(rA);
     }
