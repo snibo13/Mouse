@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4643900211972074244}
   - component: {fileID: 3328285582479305905}
   m_Layer: 0
-  m_Name: Spell
+  m_Name: Swipe Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

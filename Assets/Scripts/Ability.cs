@@ -4,9 +4,9 @@ using System.Collections;
 public static class PlayerAbilities
 {
     public static LayerMask enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
-    public static GameObject shockwavePrefab;
-    public static GameObject swipePrefab;
-    public static GameObject shotPrefab;
+    public static GameObject shockwavePrefab = (GameObject)Resources.Load("Shockwave Prefab");
+    public static GameObject swipePrefab = (GameObject)Resources.Load("Swipe Prefab");
+    public static GameObject shotPrefab = (GameObject)Resources.Load("SimpleProjectile");
 
     public static Effect shotEffect = new Effect(0, 0);
     public static RangedAbility shot = new RangedAbility(
@@ -51,14 +51,15 @@ public static class EnemyAbilities
     );
 }
 
-public abstract class Ability : MonoBehaviour
+public abstract class Ability
 {
     protected Effect effect { get; set; }
     protected LayerMask targetLayer { get; set; }
     protected float range { get; set; }
     protected float cooldown { get; set; }
-    protected bool available { get; set; }
     protected GameObject obj { get; set; }
+
+    protected float lastUsed { get; set; }
 
     public Ability(Effect e, LayerMask t, float r, float c, GameObject o)
     {
@@ -66,14 +67,13 @@ public abstract class Ability : MonoBehaviour
         targetLayer = t;
         range = r;
         cooldown = c;
-        available = true;
         obj = o;
+        lastUsed = Time.time - cooldown;
     }
 
-    public static IEnumerator resetAvailability(Ability a)
+    public bool available()
     {
-        yield return new WaitForSeconds(a.cooldown);
-        a.available = true;
+        return (Time.time - lastUsed) >= cooldown;
     }
 
     public abstract void use(Transform transform, int direction);
@@ -86,8 +86,13 @@ public class CloseAbility : Ability
 
     override public void use(Transform transform, int direction)
     {
-        if (!available)
+        if (!available())
             return;
+        if (obj != null)
+        {
+            Vector2 spawnPoint = (Vector2)transform.position + Vector2.right * direction * 1f;
+            UnityEngine.Object.Instantiate(this.obj, spawnPoint, transform.rotation);
+        }
         Vector2 attackVector = range * Vector2.right * direction;
         Collider2D[] abilityHits = Physics2D.OverlapCircleAll(
             (Vector2)transform.position + attackVector,
@@ -102,8 +107,6 @@ public class CloseAbility : Ability
             Vector2 pushDirection = direction * Vector2.right;
             enemy.movement.push(effect.knockback * pushDirection.normalized);
         }
-        IEnumerator rA = resetAvailability(this);
-        StartCoroutine(rA);
     }
 }
 
@@ -119,15 +122,14 @@ public class RangedAbility : Ability
 
     override public void use(Transform transform, int direction)
     {
-        if (!available)
+        if (!available())
             return;
-        Vector2 spawnPoint = (Vector2)transform.position + Vector2.right * direction * spawnOffset;
-        GameObject projectile = (GameObject)Instantiate(this.obj, spawnPoint, transform.rotation);
 
+        Vector2 spawnPoint = (Vector2)transform.position + Vector2.right * direction * 0.5f;
+        GameObject projectile = (GameObject)
+            UnityEngine.Object.Instantiate(this.obj, spawnPoint, transform.rotation);
         Projectile p = projectile.GetComponent<Projectile>();
         p.addForce(Vector2.right * direction * p.speed); // TODO: Move into initialisation of projectile
-        available = false;
-        IEnumerator rA = resetAvailability(this);
-        StartCoroutine(rA);
+        lastUsed = Time.time;
     }
 }

@@ -8,7 +8,11 @@ public class Controller : MonoBehaviour
     private float vertical;
 
     public Character character;
-    private Dictionary<string, bool> abilityUnlocked = new Dictionary<string, bool>();
+    private static Dictionary<string, bool> abilityUnlocked = new Dictionary<string, bool>()
+    {
+        { "swipe", true },
+        { "shot", true }
+    };
 
     private float abilityFreeze = 0.4f;
 
@@ -34,7 +38,12 @@ public class Controller : MonoBehaviour
         if (Input.GetButtonDown("Swipe") && abilityUnlocked["swipe"])
         {
             PlayerAbilities.swipe.use(character.transform, character.getDirection());
-            Debug.Log("Swipe");
+        }
+        else if (Input.GetButtonDown("Shot") && abilityUnlocked["shot"])
+        {
+            {
+                PlayerAbilities.shot.use(character.transform, character.getDirection());
+            }
         }
     }
 
