@@ -39,10 +39,16 @@ public static class PlayerAbilities
 
 public static class EnemyAbilities
 {
-    public static LayerMask playerMask = 1 << LayerMask.NameToLayer("Player");
+    public static LayerMask playerLayer = 1 << LayerMask.NameToLayer("Player");
 
     public static Effect slashEffect = new Effect(5, 1);
-    public static CloseAbility 
+    public static CloseAbility slashAbility = new CloseAbility(
+        slashEffect,
+        playerLayer,
+        2.0f,
+        2.0f,
+        null
+    );
 }
 
 public abstract class Ability : MonoBehaviour
@@ -94,7 +100,7 @@ public class CloseAbility : Ability
             hit.TryGetComponent<Character>(out enemy);
             enemy.takeDamage(effect.damage);
             Vector2 pushDirection = direction * Vector2.right;
-            enemy.movmement.push(effect.knockback * pushDirection.normalized);
+            enemy.movement.push(effect.knockback * pushDirection.normalized);
         }
         IEnumerator rA = resetAvailability(this);
         StartCoroutine(rA);

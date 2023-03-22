@@ -613,11 +613,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a5048e17faa62345963d0bd8b13af6f, type: 3}
---- !u!1 &337566637 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7825411551268211902, guid: 4a5048e17faa62345963d0bd8b13af6f, type: 3}
-  m_PrefabInstance: {fileID: 337566636}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &348087892
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1299,11 +1294,13 @@ GameObject:
   m_Component:
   - component: {fileID: 600126797}
   - component: {fileID: 600126796}
-  - component: {fileID: 600126795}
   - component: {fileID: 600126801}
   - component: {fileID: 600126804}
   - component: {fileID: 600126805}
   - component: {fileID: 600126806}
+  - component: {fileID: 600126807}
+  - component: {fileID: 600126795}
+  - component: {fileID: 600126808}
   m_Layer: 8
   m_Name: Metroid Character
   m_TagString: Player
@@ -1323,7 +1320,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d590eecd2cb27474b89a778286eda204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lock1: 1
   maxSpeed: 8
   jumpForce: {x: 0, y: 16}
   wallForce: 16
@@ -1344,25 +1340,8 @@ MonoBehaviour:
   dashTime: 0.3
   projectilePrefab: {fileID: 8174598197979160844, guid: da5e5932719baa04ba3c1a5cd064eed1, type: 3}
   doubleJumpPrefab: {fileID: 7653089790830657011, guid: acdfe55db7fefbd43895f3c7ccd777f8, type: 3}
-  shockwavePrefab: {fileID: 1801382030359142153, guid: cfe00fbc46ea69442b08289e3ff491b6, type: 3}
-  spellPrefab: {fileID: 4643900211972074245, guid: e6e73d93c065849498d5b39b922cc435, type: 3}
-  heart: {fileID: 5799072237268947244, guid: cf3b761811249174793bcb3c05cd8a6f, type: 3}
-  cameraTransform: {fileID: 0}
-  heart_percent: {fileID: 337566637}
+  character: {fileID: 600126808}
   dashForce: {x: 20, y: 0}
-  hp: 100
-  attackOneDamage: 1
-  attackTwoDamage: 1
-  attackThreeDamage: 2
-  attackOneRange: 1
-  attackTwoRange: 1
-  attackThreeRange: 1
-  bpRange: 5
-  bpDamage: 1
-  bpKnockback: 5
-  bpCooldown: 2
-  attackFreeze: 0.25
-  spawnOffset: 1
 --- !u!212 &600126796
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1504,6 +1483,37 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &600126807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600126794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f08a67aa2a7714b946255cfddac5f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  character: {fileID: 600126808}
+--- !u!114 &600126808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600126794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a041066649fb25409f55a817dc9b775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movement: {fileID: 600126795}
+  abilities: []
+  Ub: {fileID: 600126806}
+  sprite: {fileID: 600126796}
+  body: {fileID: 600126801}
+  attacking: 0
 --- !u!1 &642055335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1537,8 +1547,8 @@ MonoBehaviour:
   m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
-  m_SubmitButton: 
-  m_CancelButton: 
+  m_SubmitButton: Submit
+  m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
   m_RepeatDelay: 0.5
   m_ForceModuleActive: 0

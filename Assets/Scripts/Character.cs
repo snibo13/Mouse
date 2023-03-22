@@ -1,12 +1,24 @@
 using UnityEngine;
 
-public class Character : MonoBehaviour
+public class Character : MonoBehaviour //TODO: Convert to Player Character singleton
 {
-    private Movement movement;
-    private Ability[] abilities;
+    public Movement movement;
+    public Ability[] abilities;
 
-    private Controller controller;
     private float hp = 100;
+
+    public Animator Ub;
+    public SpriteRenderer sprite;
+    public Rigidbody2D body;
+
+    public bool attacking = false;
+
+    void Enable()
+    {
+        body = GetComponent<Rigidbody2D>();
+        Ub = GetComponent<Animator>();
+        sprite = GetComponent<SpriteRenderer>();
+    }
 
     public float getHP()
     {

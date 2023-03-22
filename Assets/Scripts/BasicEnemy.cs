@@ -53,7 +53,7 @@ public class BasicEnemy : MonoBehaviour
         if (attackCollider)
         {
             attackCollider.TryGetComponent<Movement>(out character);
-            character.takeDamage(computeDamage());
+            // character.takeDamage(computeDamage());
         }
         else
             Debug.Log("Dodged");
@@ -69,12 +69,14 @@ public class BasicEnemy : MonoBehaviour
 
     public void push(Vector2 knockback)
     {
-        body.velocity = new Vector2(0,0);
+        body.velocity = new Vector2(0, 0);
         body.AddForce(knockback, ForceMode2D.Impulse);
         FollowEnemy fe = gameObject.GetComponent<FollowEnemy>();
         PatrolEnemy pe = gameObject.GetComponent<PatrolEnemy>();
-        if (fe != null) fe.enabled = false;
-        if (pe != null) pe.enabled = false;
+        if (fe != null)
+            fe.enabled = false;
+        if (pe != null)
+            pe.enabled = false;
         StartCoroutine("stunBlock");
     }
 
@@ -84,8 +86,10 @@ public class BasicEnemy : MonoBehaviour
         yield return new WaitForSeconds(1f);
         FollowEnemy fe = gameObject.GetComponent<FollowEnemy>();
         PatrolEnemy pe = gameObject.GetComponent<PatrolEnemy>();
-        if (fe != null) fe.enabled = true;
-        if (pe != null) pe.enabled = true;
+        if (fe != null)
+            fe.enabled = true;
+        if (pe != null)
+            pe.enabled = true;
     }
 
     IEnumerator DelayReAttack()

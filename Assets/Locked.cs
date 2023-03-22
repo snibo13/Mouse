@@ -5,16 +5,15 @@ using UnityEngine;
 public class Locked : MonoBehaviour
 {
     public Movement character;
+
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    void Start() { }
 
     // Update is called once per frame
     void Update()
     {
-        if (character.lock1 == true) {
+        if (World.lock1 == true)
+        {
             Destroy(gameObject);
         }
     }

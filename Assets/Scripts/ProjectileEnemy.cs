@@ -52,21 +52,30 @@ public class ProjectileEnemy : MonoBehaviour
             GetComponent<SpriteRenderer>().bounds.size.x * 1.1f,
             GetComponent<SpriteRenderer>().bounds.size.y * 1.1f
         );
-        if (groundDetonate) {
+        if (groundDetonate)
+        {
             grounded = Physics2D.OverlapBox(pos, size, 0, groundLayer);
-        } else {
+        }
+        else
+        {
             grounded = false;
         }
-        if (GetComponent<BoxCollider2D>() != null) {
+        if (GetComponent<BoxCollider2D>() != null)
+        {
             size = new Vector2(
-            GetComponent<BoxCollider2D>().bounds.size.x * 1f,
-            GetComponent<BoxCollider2D>().bounds.size.y * 1f
-        );
-        return Physics2D.OverlapBox(pos, size, 0, playerLayer) || grounded;
-        } else {
-            return Physics2D.OverlapCircle(pos, GetComponent<CircleCollider2D>().radius, playerLayer) || grounded;
+                GetComponent<BoxCollider2D>().bounds.size.x * 1f,
+                GetComponent<BoxCollider2D>().bounds.size.y * 1f
+            );
+            return Physics2D.OverlapBox(pos, size, 0, playerLayer) || grounded;
         }
-        
+        else
+        {
+            return Physics2D.OverlapCircle(
+                    pos,
+                    GetComponent<CircleCollider2D>().radius,
+                    playerLayer
+                ) || grounded;
+        }
     }
 
     public void addForce(Vector2 vel)
@@ -89,13 +98,14 @@ public class ProjectileEnemy : MonoBehaviour
                 GetComponent<BoxCollider2D>().bounds.size.y * 1f
             );
             Collider2D[] hits = Physics2D.OverlapBoxAll(pos, size, 0, playerLayer);
-            Movement player;
+            Character player;
             foreach (Collider2D playerCollider in hits)
             {
-                playerCollider.TryGetComponent<Movement>(out player);
+                playerCollider.TryGetComponent<Character>(out player);
                 player.takeDamage(damage);
-                Vector2 direction = (Vector2)player.transform.position - (Vector2)transform.position;
-                player.push(knockback * direction.normalized);
+                Vector2 direction =
+                    (Vector2)player.transform.position - (Vector2)transform.position;
+                player.movement.push(knockback * direction.normalized);
                 //TODO: Add damage falloff
             }
             Debug.Log("Exploded");
@@ -108,14 +118,15 @@ public class ProjectileEnemy : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Vector2 posDraw = (Vector2)transform.position - offset;
-        if (GetComponent<BoxCollider2D>() != null) {
-        Vector2 boxSize = new Vector2(
+        if (GetComponent<BoxCollider2D>() != null)
+        {
+            Vector2 boxSize = new Vector2(
                 GetComponent<BoxCollider2D>().bounds.size.x * 1f,
                 GetComponent<BoxCollider2D>().bounds.size.y * 1f
             );
-        Gizmos.DrawWireCube(posDraw, boxSize);
+            Gizmos.DrawWireCube(posDraw, boxSize);
         }
-        
+
         if (GetComponent<CircleCollider2D>() != null)
             Gizmos.DrawWireSphere(posDraw, GetComponent<CircleCollider2D>().radius);
     }
